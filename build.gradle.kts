@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.github.ben-manes.versions")
+    //id("com.github.ben-manes.versions")
     id("jacoco-aggregation")
     id("com.github.johnrengelman.shadow")
     id("io.micronaut.application")
@@ -67,5 +67,23 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "15"
+    }
+}
+
+tasks {
+    dependencyUpdates {
+        checkConstraints = true
+        resolutionStrategy {
+            componentSelection {
+                all {
+                    val rejected = listOf("alpha", "beta", "rc", "cr", "m", "preview", "b", "ea")
+                        .map { qualifier -> Regex("(?i).*[.-]$qualifier[.\\d-+]*") }
+                        .any { it.matches(candidate.version) }
+                    if (rejected) {
+                        reject("Release candidate")
+                    }
+                }
+            }
+        }
     }
 }
