@@ -85,7 +85,10 @@ val javadocAggregate by tasks.registering(Javadoc::class) {
 val javadocAggregateIncludingTests by tasks.registering(Javadoc::class) {
     description = "Generates aggregate javadoc for all the artifacts"
 
-    val sourceSets = project.properties["sourceSets"] as SourceSetContainer
+    val allSourceSets = project.properties["sourceSets"] as SourceSetContainer
+    val sourceSets = allSourceSets
+        .mapNotNull { it.extensions.findByType<SourceSetContainer>() }
+        .flatMap { listOf(it.named("main"), it.named("test")) }
     //val sourceSets = subprojects
     //    .mapNotNull { it.extensions.findByType<SourceSetContainer>() }
     //    .flatMap { listOf(it.named("main"), it.named("test")) }
