@@ -35,7 +35,9 @@ jobs:
           restore-keys: |
             test-${{ runner.os }}-gradle-
       - name: Build with Gradle
-        run: ./gradlew build
+        run: |
+          chmod a+x ./gradlew
+          ./gradlew build
 
   graal-15-linux:
     runs-on: ubuntu-latest
@@ -63,7 +65,9 @@ jobs:
           restore-keys: |
             test-${{ runner.os }}-gradle-
       - name: Build with Gradle
-        run: ./gradlew build nativeImage -x check
+        run: |
+          chmod a+x ./gradlew
+          ./gradlew build nativeImage -x check
 
   coverage:
     runs-on: ubuntu-latest
