@@ -22,8 +22,8 @@ if (hasIntTests) {
 }
 
 configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_1_15
-    targetCompatibility = JavaVersion.VERSION_1_15
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
 }
 
 spotless {
