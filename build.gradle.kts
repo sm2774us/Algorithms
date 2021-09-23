@@ -3,6 +3,8 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("com.github.ben-manes.versions")
+    id("jacoco-aggregation")
     id("com.github.johnrengelman.shadow")
     id("io.micronaut.application")
     id("org.jlleitschuh.gradle.ktlint") version "8.1.0"

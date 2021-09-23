@@ -64,6 +64,7 @@ jobs:
           chmod a+x ./gradlew
           ./gradlew --version
           ./gradlew --scan --no-parallel --stacktrace --warning-mode=all jacocoReport
+
       - uses: codecov/codecov-action@v1
 
   release-notes:
