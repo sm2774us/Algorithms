@@ -63,6 +63,33 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
 }
 
+val javadocAggregate by tasks.registering(Javadoc::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Generates aggregate javadoc for all the artifacts"
+
+    val sourceSets = subprojects
+        .mapNotNull { it.extensions.findByType<SourceSetContainer>() }
+        .map { it.named("main") }
+
+    classpath = files(sourceSets.map { set -> set.map { it.output + it.compileClasspath } })
+    setSource(sourceSets.map { set -> set.map { it.allJava } })
+    setDestinationDir(file("$buildDir/docs/javadocAggregate"))
+}
+
+/** Similar to {@link #javadocAggregate} but includes tests.
+ * CI uses this target to validate javadoc (e.g. checking for broken links). */
+val javadocAggregateIncludingTests by tasks.registering(Javadoc::class) {
+    description = "Generates aggregate javadoc for all the artifacts"
+
+    val sourceSets = subprojects
+        .mapNotNull { it.extensions.findByType<SourceSetContainer>() }
+        .flatMap { listOf(it.named("main"), it.named("test")) }
+
+    classpath = files(sourceSets.map { set -> set.map { it.output + it.compileClasspath } })
+    setSource(sourceSets.map { set -> set.map { it.allJava } })
+    setDestinationDir(file("$buildDir/docs/javadocAggregateIncludingTests"))
+}
+
 application {
     mainClass.set("algorithms.Application")
 }

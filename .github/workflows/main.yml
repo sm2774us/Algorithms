@@ -46,7 +46,7 @@ jobs:
       - name: Generate Javadoc
         run: |
           chmod a+x ./gradlew
-          ./gradlew aggregateJavadocs
+          ./gradlew javadocAggregate
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@3.5.9
         with:
