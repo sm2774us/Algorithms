@@ -33,4 +33,34 @@ public class TopKFrequentTest {
         assertEquals(result, solution.topKFrequentUsingNaiveSort(words, k));
     }
 
+    @ParameterizedTest
+    @MethodSource({"source1", "source2"})
+    void topKFrequentUsingMaxHeap(String[] words, int k, List<String> result) {
+        assertEquals(result, solution.topKFrequentUsingMaxHeap(words, k));
+    }
+    
+    @ParameterizedTest
+    @MethodSource({"source1", "source2"})
+    void topKFrequentUsingMinHeap(String[] words, int k, List<String> result) {
+        assertEquals(result, solution.topKFrequentUsingMinHeap(words, k));
+    }
+
+    @ParameterizedTest
+    @MethodSource({"source1", "source2"})
+    void topKFrequentUsingBucketSort(String[] words, int k, List<String> result) {
+        assertEquals(result, solution.topKFrequentUsingBucketSort(words, k));
+    }
+
+    @ParameterizedTest
+    @MethodSource({"source1", "source2"})
+    void topKFrequentUsingQuickSelect(String[] words, int k, List<String> result) {
+        assertEquals(result, solution.topKFrequentUsingQuickSelect(words, k));
+    }
+
+    @ParameterizedTest
+    @MethodSource({"source1", "source2"})
+    void topKFrequentUsingSortedSet(String[] words, int k, List<String> result) {
+        assertEquals(result, solution.topKFrequentUsingSortedSet(words, k));
+    }
+
 }
