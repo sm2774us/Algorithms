@@ -34,10 +34,25 @@ jobs:
           key: test-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle', '**/*.gradle.kts', '**/gradle.properties', 'gradle/**', 'buildSrc/src/main/**') }}
           restore-keys: |
             test-${{ runner.os }}-gradle-
-      - name: Build with Gradle
+      - name: Build and Run Tests with Gradle
         run: |
           chmod a+x ./gradlew
-          ./gradlew build
+          ./gradlew build test
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v2
+        if: always() # always run even if the previous step fails
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+      - name: Generate Javadoc
+        run: ./gradlew aggregateJavadocs
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@3.5.9
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          CLEAN: true
+          FOLDER: build/docs/javadoc
+          TARGET_FOLDER: javadoc
 
   coverage:
     runs-on: ubuntu-latest

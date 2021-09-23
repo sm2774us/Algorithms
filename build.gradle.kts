@@ -10,10 +10,11 @@ plugins {
     //id("org.jlleitschuh.gradle.ktlint") version "8.1.0"
 	id("com.adarshr.test-logger") version "3.0.0"
     kotlin("jvm") version "1.5.31"
-	kotlin("kapt") version "1.5.31"
+	//kotlin("kapt") version "1.5.31"
 
     // Apply the java-library plugin for API and implementation seaparation.
     `java-library`
+    id("com.github.johnrengelman.shadow") version "5.1.0"
 }
 
 group = "algorithms"
