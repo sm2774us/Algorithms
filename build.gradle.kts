@@ -2,6 +2,14 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    repositories { jcenter() }
+
+    dependencies {
+        classpath("com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+")
+    }
+}
+
 plugins {
     //id("com.github.ben-manes.versions")
     id("jacoco-aggregation")
@@ -16,18 +24,12 @@ plugins {
     `java-library`
 }
 
-group = "algorithms"
-java.sourceCompatibility = JavaVersion.VERSION_15
-
-buildscript {
-    repositories { jcenter() }
-
-    dependencies {
-        classpath("com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+")
-    }
+apply {
+    plugin("nebula-aggregate-javadocs")
 }
 
-apply(plugin = "nebula-aggregate-javadocs")
+group = "algorithms"
+java.sourceCompatibility = JavaVersion.VERSION_15
 
 repositories {
     google()

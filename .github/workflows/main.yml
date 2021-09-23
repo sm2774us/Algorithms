@@ -44,7 +44,9 @@ jobs:
         with:
           report_paths: '**/build/test-results/test/TEST-*.xml'
       - name: Generate Javadoc
-        run: ./gradlew aggregateJavadocs
+        run: |
+          chmod a+x ./gradlew
+          ./gradlew aggregateJavadocs
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@3.5.9
         with:
