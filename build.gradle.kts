@@ -14,11 +14,20 @@ plugins {
 
     // Apply the java-library plugin for API and implementation seaparation.
     `java-library`
-    id("com.github.johnrengelman.shadow") version "5.1.0"
 }
 
 group = "algorithms"
 java.sourceCompatibility = JavaVersion.VERSION_15
+
+buildscript {
+    repositories { jcenter() }
+
+    dependencies {
+        classpath("com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+")
+    }
+}
+
+apply(plugin = "nebula-aggregate-javadocs")
 
 repositories {
     google()
