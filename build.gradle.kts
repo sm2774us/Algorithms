@@ -7,7 +7,7 @@ plugins {
     id("jacoco-aggregation")
     id("com.github.johnrengelman.shadow")
     id("io.micronaut.application")
-    id("org.jlleitschuh.gradle.ktlint") version "8.1.0"
+    //id("org.jlleitschuh.gradle.ktlint") version "8.1.0"
 	id("com.adarshr.test-logger") version "3.0.0"
     kotlin("jvm") version "1.5.31"
 	kotlin("kapt") version "1.5.31"
