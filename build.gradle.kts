@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("io.micronaut.application") version "2.0.6"
+    id("io.micronaut.application")
     id("org.jlleitschuh.gradle.ktlint") version "8.1.0"
     kotlin("jvm") version "1.5.31"
 	kotlin("kapt") version "1.5.31"
