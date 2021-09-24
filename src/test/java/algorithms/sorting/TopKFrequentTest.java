@@ -13,58 +13,72 @@ public class TopKFrequentTest {
 
     private final TopKFrequent solution = new TopKFrequent();
 
-    private static Stream<Arguments> source1() {
+    private static Stream<Arguments> topKFreqentWordsSource1() {
         String[] words = new String[] {"i","love","leetcode","i","love","coding"};
         return Stream.of(
             Arguments.of(words, 2, List.of("i","love"))
         );
     }
 
-    private static Stream<Arguments> source2() {
+    private static Stream<Arguments> topKFreqentWordsSource2() {
         String[] words = new String[] {"the","day","is","sunny","the","the","the","sunny","is","is"};
         return Stream.of(
             Arguments.of(words, 4, List.of("the","is","sunny","day"))
         );
     }
+	
+	private static Stream<Arguments> topKFreqentElementsSource1() {
+        int[] nums = new int[] {1,1,1,2,2,3};
+        return Stream.of(
+            Arguments.of(nums, 2, new int[] {1,2})
+        );
+    }
 
+	private static Stream<Arguments> topKFreqentElementsSource2() {
+        int[] nums = new int[] {1};
+        return Stream.of(
+            Arguments.of(nums, 1, new int[] {1})
+        );
+    }
+	
     @ParameterizedTest
-    @MethodSource({"source1", "source2"})
+    @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingNaiveSort(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingNaiveSort(words, k));
     }
 
     @ParameterizedTest
-    @MethodSource({"source1", "source2"})
+    @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingMaxHeap(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingMaxHeap(words, k));
     }
     
     @ParameterizedTest
-    @MethodSource({"source1", "source2"})
+    @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingMinHeap(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingMinHeap(words, k));
     }
 
     @ParameterizedTest
-    @MethodSource({"source1", "source2"})
+    @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingQuickSelect(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingQuickSelect(words, k));
     }
 
     @ParameterizedTest
-    @MethodSource({"source1", "source2"})
+    @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingSortedSet(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingSortedSet(words, k));
     }
 
     @ParameterizedTest
-    @MethodSource({"source1", "source2"})
+    @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingTrie(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingTrie(words, k));
     }
 
     @ParameterizedTest
-    @MethodSource({"source1", "source2"})
+    @MethodSource({"topKFreqentElementsSource1", "topKFreqentElementsSource2"})
     void topKFrequentElementsUsingBucketSort(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentElementsUsingBucketSort(words, k));
     }
