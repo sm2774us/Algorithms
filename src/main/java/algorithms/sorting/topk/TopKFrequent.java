@@ -8,6 +8,10 @@ import java.util.*;
 public class TopKFrequent {
 
     /**
+	 * LeetCode - 692 : Top K Frequent Words.
+	 * https://leetcode.com/problems/top-k-frequent-words/
+	 *
+	 *	
      * Solution-1: NAIVE SORT - The easiest way to think of this problem and easy to implement.
      * 
      * Determine top-K frequent elements using Naive Sorting.
@@ -37,6 +41,10 @@ public class TopKFrequent {
     }
 
     /**
+	 * LeetCode - 692 : Top K Frequent Words.
+	 * https://leetcode.com/problems/top-k-frequent-words/
+	 *
+	 *	
      * Solution-2: MAX HEAP - Maintain a max heap and add all the words in it. Pop top K words to get the results.
      * 
      * Determine top-K frequent elements using Max Heap.
@@ -127,51 +135,11 @@ public class TopKFrequent {
     }
 
     /**
-     * Solution-4: BUCKET SORT -
-     * 
-     * It is intuitive to map a value to its frequency. 
-     * Then our problem becomes 'to sort map entries by their values'.
-     * Since frequency is within the range [1, n] for n is the number of elements, 
-     * we could apply the idea of Bucket Sort:
-     *   1) We divide frequencies into n + 1 buckets, in this way, the list in buckets[i] contains elements with the same frequency i
-     *   2) Then, we go through the buckets from tail to head until we collect k elements.
-     * 
-     * Determine top-K frequent elements using Bucket Sort.
-     *
-     * Time Complexity  : O(N)
-     * Space Complexity : O(N)
-     *
-     * @param words
-     * @param k
-     * @return
-     */
-    public List<String> topKFrequentUsingBucketSort(String[] words, int k) {
-        // freq map
-        Map<Integer, Integer> freq = new HashMap<Integer, Integer>();
-        for (int n : nums) {
-            freq.put(n, freq.getOrDefault(n, 0) + 1);
-        }
-        // bucket sort on freq
-        List<Integer>[] buckets = new List[nums.length + 1];
-        for(int key: freq.keySet()){
-            int frequency = freq.get(key);
-            if(buckets[frequency] == null)
-                buckets[frequency] = new ArrayList<>();
-            buckets[frequency].add(key);
-        }
-        // gather result
-        List<Integer> res = new ArrayList<>();
-        for(int pos = buckets.length-1; pos >= 0; pos--){
-            if(buckets[pos] != null){
-                for(int i = 0; i < buckets[pos].size() && res.size() < k; i++)
-                    res.add(buckets[pos].get(i));
-            }
-        }
-        return res;
-    }
-
-    /**
-     * Solution-5: QUICKSELECT -
+	 * LeetCode - 692 : Top K Frequent Words.
+	 * https://leetcode.com/problems/top-k-frequent-words/
+	 *
+	 *	
+     * Solution-4: QUICKSELECT -
      * 
      * Use quick select to figure out what the top k elements are. That's O(N).
      * Then sort those top k elements. That's O(K*log(K)).
@@ -246,7 +214,11 @@ public class TopKFrequent {
     }
 
     /**
-     * Solution-6: SORTED SET -
+	 * LeetCode - 692 : Top K Frequent Words.
+	 * https://leetcode.com/problems/top-k-frequent-words/
+	 *
+	 *
+     * Solution-5: SORTED SET -
      * 
      * Time Complexity  : O(N*log(K)), 
      * 
@@ -298,4 +270,154 @@ public class TopKFrequent {
         }
         return result;
     }
+
+    class Trie {
+        int cnt;
+        int low;
+        int high;
+        String str;
+        Trie[] children;
+        Trie() {
+        }
+        
+        Trie insert(String str, int lvl) {
+            if (lvl >= str.length()) {
+                if (cnt == 0) {
+                    this.str = str;
+                }
+                cnt++;
+                return this;
+            }
+            
+            int idx = str.charAt(lvl) - 'a';
+            if (children == null) {
+                children = new Trie[26];
+                low = high = idx;
+            }
+            
+            if (children[idx] == null) {
+                children[idx] = new Trie();
+                if (idx < low) {
+                    low = idx;
+                } else if (idx > high) { 
+                    high = idx;
+                }
+            }
+            return children[idx].insert(str, lvl+1);
+        }
+        
+        void traverse() {
+            if (children != null) {
+                for (int i = high; i >= low; i--) {
+                    if (children[i] == null) {
+                        continue;
+                    }
+                    children[i].traverse();
+                }
+            }
+
+            if (cnt > 0) {
+                ListTrie listTrie = new ListTrie(this);
+                listTrie.next = listTries[cnt];
+                listTries[cnt] = listTrie;
+            }
+        }
+    }
+    
+    class ListTrie {
+        Trie trie;
+        ListTrie next;
+        ListTrie(Trie trie) {
+            this.trie = trie;
+        }
+    }
+    
+    ListTrie[] listTries;
+
+    /**
+	 * LeetCode - 692 : Top K Frequent Words.
+	 * https://leetcode.com/problems/top-k-frequent-words/
+	 *
+	 *
+     * Solution-6: TRIE -
+     * 
+     * Time Complexity  : O(N)
+     * Space Complexity  : O(N)
+     */    
+    public List<String> topKFrequentUsingTrie(String[] words, int k) {
+        
+        Trie root = new Trie();
+        int maxCnt = 0;
+        
+        for (int i = 0; i < words.length; i++) {        
+            Trie trie = root.insert(words[i], 0);
+            if (trie.cnt > maxCnt) {
+                maxCnt = trie.cnt;
+            }
+        }
+        
+        listTries = new ListTrie[maxCnt+1];
+        root.traverse();
+        
+        LinkedList<String> rslts = new LinkedList<>();
+        int rest = k;
+        for (int i = maxCnt; i >= 0 && rest > 0; i--) {
+            ListTrie listTrie = listTries[i];
+            while(rest > 0 && listTrie != null) {
+                rslts.add(listTrie.trie.str);
+                rest--;
+                listTrie = listTrie.next;
+            }
+            
+        }
+        return rslts;
+    }
+
+    /**
+	 * LeetCode - 347 : Top K Frequent Elements.
+	 * https://leetcode.com/problems/top-k-frequent-elements/
+	 *
+     * Solution-1: BUCKET SORT -
+     * 
+     * It is intuitive to map a value to its frequency. 
+     * Then our problem becomes 'to sort map entries by their values'.
+     * Since frequency is within the range [1, n] for n is the number of elements, 
+     * we could apply the idea of Bucket Sort:
+     *   1) We divide frequencies into n + 1 buckets, in this way, the list in buckets[i] contains elements with the same frequency i
+     *   2) Then, we go through the buckets from tail to head until we collect k elements.
+     * 
+     * Determine top-K frequent elements using Bucket Sort.
+     *
+     * Time Complexity  : O(N)
+     * Space Complexity : O(N)
+     *
+     * @param words
+     * @param k
+     * @return
+     */
+    public List<Integer> topKFrequentElementsUsingBucketSort(int[] nums, int k) {
+        // freq map
+        Map<Integer, Integer> freq = new HashMap<Integer, Integer>();
+        for (int n : nums) {
+            freq.put(n, freq.getOrDefault(n, 0) + 1);
+        }
+        // bucket sort on freq
+        List<Integer>[] buckets = new List[nums.length + 1];
+        for(int key: freq.keySet()){
+            int frequency = freq.get(key);
+            if(buckets[frequency] == null)
+                buckets[frequency] = new ArrayList<>();
+            buckets[frequency].add(key);
+        }
+        // gather result
+        List<Integer> res = new ArrayList<>();
+        for(int pos = buckets.length-1; pos >= 0; pos--){
+            if(buckets[pos] != null){
+                for(int i = 0; i < buckets[pos].size() && res.size() < k; i++)
+                    res.add(buckets[pos].get(i));
+            }
+        }
+        return res;
+    }
+
 }
