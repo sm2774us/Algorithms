@@ -65,24 +65,15 @@ public class TopKFrequent {
     }
 
     /**
-     * Solution-3: MIN HEAP - Instead of using a max heap, we only store Top K Freqency word we have met so far in our min heap.
+     * Solution-3: MIN HEAP - Instead of using a max heap, we only store Top K Freqency word 
+	 * we have met so far in our min heap.
      * 
      * Determine top-K frequent elements using Min Heap.
      *
-     * Complexity Analysis:
-     * 
-     * We iterate over the array and store into map, taking O(n) time complexity and space.
-     * So, we see that n elements are added to a heap of size of max k => n log k
-     * (n - k) elements are deleted from heap of size k + 1 => O((n - k) log k)
-     * Copy k elements for the result => O(k + k log k) including deletion from heap
-     *
-     * Hence, the worst case time complexity =>
-     * O(n + n log k + (n - k) log k + k + k log k) ~~ O(n log k + n + k)
-     *
-     * And space : O(max(n, k)), as O(n) for map and O(k) for heap.
-     * 
-     * Time Complexity  : O(N*(log(K) + N + K)
-     * Space Complexity : O(max(N, K))
+     * heap implemented using PriorityQueue & lambda comparator
+     * time: O(NlogK) space: O(N)
+     * we can also use kth smallest algorithm for this algorithm to 
+     * achieve O(N) time. But Java doesn't has a built-in package for that.
      *
      * @param words
      * @param k
@@ -115,30 +106,24 @@ public class TopKFrequent {
     //     return ans;
     // }
     public List<String> topKFrequentUsingMinHeap(String[] words, int k) {
-
-        List<Integer> result = new ArrayList<>();
-        // n distinct elements are stored, lets say, so, space O(n)
-        Map<Integer, Integer> map = new HashMap<>(); 
-    
-        for (int e : nums) // O(n) time complexity and space too
-            map.merge(e, 1, Integer::sum);
-    
-        // minHeap can hold max k +1 elements
-        PriorityQueue<Map.Entry<Integer, Integer>> minHeap = 
-            new PriorityQueue<Map.Entry<Integer, Integer>>((a, b) -> Integer.compare(a.getValue(), b.getValue()));
-    
-        for (Map.Entry<Integer, Integer> e : map.entrySet()) { // runs for n times
-            // time : n log k, why? the heap is restricted to keep max k + 1 elements, hence for each add time complexity is O(log k) and that happens for n times, resulting in O(n log k)
-            minHeap.offer(e); 
-    
-            if (minHeap.size() > k) // elimination happens for n - k times
-                minHeap.poll(); // each delete takes O(log k)
+        // first count the occurance of each word
+        Map<String, Integer> map = new HashMap<>();
+        for (String word: words) {
+            map.put(word, map.getOrDefault(word, 0) + 1);
         }
-    
-        while (!minHeap.isEmpty()) { // O(k) times
-            result.add(0, minHeap.poll().getKey()); // O(log k) for each removal
+        
+        // now build the min heap with occurance as the Key
+        PriorityQueue<String> pq = new PriorityQueue<>((s1, s2) -> map.get(s1) - map.get(s2) != 0 ? map.get(s1) - map.get(s2) : - s1.compareTo(s2));
+        
+        for(String word: map.keySet()) {
+            pq.offer(word);
+            if (pq.size() > k) pq.poll();
         }
-        return result;        
+        
+        List<String> sortedList = new LinkedList<String>();
+        while (!pq.isEmpty()) sortedList.add(0, pq.poll());
+        
+        return sortedList;        
     }
 
     /**
