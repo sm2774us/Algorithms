@@ -79,8 +79,8 @@ public class TopKFrequentTest {
 
     @ParameterizedTest
     @MethodSource({"topKFreqentElementsSource1", "topKFreqentElementsSource2"})
-    void topKFrequentElementsUsingBucketSort(String[] words, int k, List<String> result) {
-        assertEquals(result, solution.topKFrequentElementsUsingBucketSort(words, k));
+    void topKFrequentElementsUsingBucketSort(int[] nums, int k, int[] result) {
+        assertEquals(result, solution.topKFrequentElementsUsingBucketSort(nums, k));
     }
 
 
