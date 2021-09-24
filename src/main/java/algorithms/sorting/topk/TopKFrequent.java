@@ -170,16 +170,16 @@ public class TopKFrequent {
         List<Integer>[] buckets = new List[nums.length + 1];
         for(int key: freq.keySet()){
             int frequency = freq.get(key);
-            if(bucket[frequency] == null)
-                bucket[frequency] = new ArrayList<>();
-            bucket[frequency].add(key);
+            if(buckets[frequency] == null)
+                buckets[frequency] = new ArrayList<>();
+            buckets[frequency].add(key);
         }
         // gather result
         List<Integer> res = new ArrayList<>();
-        for(int pos = bucket.length-1; pos >= 0; pos--){
-            if(bucket[pos] != null){
-                for(int i = 0; i < bucket[pos].size() && res.size() < k; i++)
-                    res.add(bucket[pos].get(i));
+        for(int pos = buckets.length-1; pos >= 0; pos--){
+            if(buckets[pos] != null){
+                for(int i = 0; i < buckets[pos].size() && res.size() < k; i++)
+                    res.add(buckets[pos].get(i));
             }
         }
         return res;
@@ -220,7 +220,7 @@ public class TopKFrequent {
         return Arrays.asList(topK);
     }
 
-    private String findKthLargest2(String[] nums, int k, Map<String, Integer> counts) {
+    private String findKthLargest(String[] nums, int k, Map<String, Integer> counts) {
         int low = 0, high = nums.length - 1;
         
         while (low < high) {
