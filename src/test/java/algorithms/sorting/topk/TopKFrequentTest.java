@@ -41,47 +41,46 @@ public class TopKFrequentTest {
         );
     }
 	
-    @ParameterizedTest
+    @ParameterizedTest(name = "topK Frequent Words Using Naive Sort - TC: O(N*log(N)) ; SC: O(N)")
     @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingNaiveSort(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingNaiveSort(words, k));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "topK Frequent Words Using Max Heap - TC: O(N+K*log(N)) ; SC: O(N)")
     @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingMaxHeap(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingMaxHeap(words, k));
     }
     
-    @ParameterizedTest
+    @ParameterizedTest(name = "topK Frequent Words Using Min Heap - TC: O(N*log(K)) ; SC: O(N)")
     @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingMinHeap(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingMinHeap(words, k));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "topK Frequent Words Using Max Heap - TC: O(N+K*log(K)) ; SC: O(N)")
     @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingQuickSelect(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingQuickSelect(words, k));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "topK Frequent Words Using Sorted Set - TC: O(N*log(K)) ; SC: O(N)")
     @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingSortedSet(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingSortedSet(words, k));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "topK Frequent Words Using Trie Data Structure - TC: O(N) ; SC: O(N)")
     @MethodSource({"topKFreqentWordsSource1", "topKFreqentWordsSource2"})
     void topKFrequentUsingTrie(String[] words, int k, List<String> result) {
         assertEquals(result, solution.topKFrequentUsingTrie(words, k));
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "topK Frequent Elements Using Bucket Sort - TC: O(N) ; SC: O(N)")
     @MethodSource({"topKFreqentElementsSource1", "topKFreqentElementsSource2"})
     void topKFrequentElementsUsingBucketSort(int[] nums, int k, int[] result) {
         assertEquals(result, solution.topKFrequentElementsUsingBucketSort(nums, k));
     }
-
 
 }

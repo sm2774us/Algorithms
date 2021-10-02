@@ -87,32 +87,6 @@ public class TopKFrequent {
      * @param k
      * @return
      */
-    // public List<String> topKFrequentUsingMinHeap(String[] words, int k) {
-    //     Map<String, Integer> map = new HashMap<>();
-    //     for(String word:words){
-    //         map.put(word, map.getOrDefault(word, 0)+1);
-    //     }
-    //     MyComparator comparator = new MyComparator();
-    //     PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>(comparator);
-    //     for(Map.Entry<String, Integer> e:map.entrySet()){
-    //         // If minHeap's size is smaller than K, we just add the entry
-    //         if(pq.size()<k){
-    //             pq.offer(e);
-    //         }
-    //         // Else, we compare the current entry with "min" entry in priority queue
-    //         else {
-    //             if(comparator.compare(e, pq.peek())>0){
-    //                 pq.poll();
-    //                 pq.offer(e);
-    //             }
-    //         }
-    //     }
-    //     List<String> ans = new LinkedList<>();
-    //     for(int i = 0;i<=k-1;i++){
-    //         ans.add(0, pq.poll().getKey());//the "smaller" entry poll out ealier 
-    //     }
-    //     return ans;
-    // }
     public List<String> topKFrequentUsingMinHeap(String[] words, int k) {
         // first count the occurance of each word
         Map<String, Integer> map = new HashMap<>();
@@ -395,28 +369,36 @@ public class TopKFrequent {
      * @param k
      * @return
      */
-    public List<Integer> topKFrequentElementsUsingBucketSort(int[] nums, int k) {
-        // freq map
-        Map<Integer, Integer> freq = new HashMap<Integer, Integer>();
+    public int[] topKFrequentElementsUsingBucketSort(int[] nums, int k) {
+        // since the range of count is fixed (0, nums), we can use buckt sort
+        // count frequency
+        Map<Integer, Integer> counts = new HashMap<>();
         for (int n : nums) {
-            freq.put(n, freq.getOrDefault(n, 0) + 1);
+            counts.put(n, counts.getOrDefault(n, 0) + 1);
         }
-        // bucket sort on freq
-        List<Integer>[] buckets = new List[nums.length + 1];
-        for(int key: freq.keySet()){
-            int frequency = freq.get(key);
-            if(buckets[frequency] == null)
-                buckets[frequency] = new ArrayList<>();
-            buckets[frequency].add(key);
+
+        // create one bucket for each frequency
+        // each bucket is a list of n for that frequency
+        // NOTE: no <> after new List[]
+        List<Integer>[] bucket = new List[nums.length + 1];
+        for (int n : counts.keySet()) {
+            int count = counts.get(n);
+            // default vaule for object is null
+            if (bucket[count] == null) bucket[count] = new ArrayList<>();
+            bucket[count].add(n);
         }
-        // gather result
-        List<Integer> res = new ArrayList<>();
-        for(int pos = buckets.length-1; pos >= 0; pos--){
-            if(buckets[pos] != null){
-                for(int i = 0; i < buckets[pos].size() && res.size() < k; i++)
-                    res.add(buckets[pos].get(i));
+
+        // scan each bucket and add to res
+        int[] res = new int[k];
+        int j = 0;
+        for (int i = nums.length; i >= 0; i--) {
+            if (bucket[i] == null) continue;
+            for (int n : bucket[i]) {
+                res[j++] = n;
+                if (j == k) return res;
             }
         }
+
         return res;
     }
 
