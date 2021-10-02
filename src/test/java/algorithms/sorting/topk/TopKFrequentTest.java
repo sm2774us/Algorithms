@@ -1,6 +1,7 @@
 package algorithms.sorting.topk;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -80,7 +81,7 @@ public class TopKFrequentTest {
     @ParameterizedTest(name = "topK Frequent Elements Using Bucket Sort - TC: O(N) ; SC: O(N)")
     @MethodSource({"topKFreqentElementsSource1", "topKFreqentElementsSource2"})
     void topKFrequentElementsUsingBucketSort(int[] nums, int k, int[] result) {
-        assertEquals(result, solution.topKFrequentElementsUsingBucketSort(nums, k));
+        assertArrayEquals(result, solution.topKFrequentElementsUsingBucketSort(nums, k));
     }
 
 }

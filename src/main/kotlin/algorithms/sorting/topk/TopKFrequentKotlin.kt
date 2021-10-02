@@ -60,7 +60,7 @@ class TopKFrequentKotlin {
             map.put(it, map.getOrDefault(it, 0) + 1)
         }
         
-        map.forEach { key, value ->
+        map.forEach { key, _ ->
             pq.offer(key)
         }
         
