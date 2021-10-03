@@ -1,4 +1,5 @@
-import { test } from "https://deno.land/std/testing/mod.ts";
+//import { test } from "https://deno.land/std/testing/mod.ts";
+import { test, TestSuite } from "https://deno.land/x/test_suite@0.9.0/mod.ts";
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import { topKFrequentUsingMaxHeap, topKFrequentElementsUsingBucketSort } from "./top_k_frequent.ts";
 
