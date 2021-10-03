@@ -32,7 +32,7 @@
  * @param {number} k
  * @returns {number[]}
  */
-function topKFrequentUsingMaxHeap(nums: number[], k: number): number[] {
+export function topKFrequentUsingMaxHeap(nums: number[], k: number): number[] {
     const numsToFrequencyMap: { [key: number]: number } = {};
     for (let i = 0; i < nums.length; i++) {
       const element = nums[i];
@@ -82,24 +82,24 @@ function topKFrequentUsingMaxHeap(nums: number[], k: number): number[] {
  * @param {number} k
  * @returns {number[]}
  */  
-  function topKFrequentElementsUsingBucketSort(nums: number[], k: number): number[] {
-	// Map of counts
-	const counts = new Map<number, number>()
-	for (const num of nums) counts.set(num, (counts?.get(num) ?? 0) + 1)
-	if (counts.size === k) return [...counts.keys()]
+export function topKFrequentElementsUsingBucketSort(nums: number[], k: number): number[] {
+    // Map of counts
+	  const counts = new Map<number, number>()
+	  for (const num of nums) counts.set(num, (counts?.get(num) ?? 0) + 1)
+	  if (counts.size === k) return [...counts.keys()]
 
-	const buckets: number[][] = Array(nums.length + 1)
-		.fill(undefined)
-		.map(() => []) // count => [nums]
-	for (const [num, count] of counts.entries()) buckets[count].push(num)
+	  const buckets: number[][] = Array(nums.length + 1)
+		    .fill(undefined)
+		    .map(() => []) // count => [nums]
+	  for (const [num, count] of counts.entries()) buckets[count].push(num)
 
-	const result: number[] = []
-	for (let i = buckets.length - 1; i >= 0; i--) {
-		const bucket = buckets[i]
-		const remaining = k - result.length
-		result.push(...bucket.slice(0, remaining))
-		if (result.length === k) break
-	}
+	  const result: number[] = []
+	  for (let i = buckets.length - 1; i >= 0; i--) {
+		    const bucket = buckets[i]
+		    const remaining = k - result.length
+		    result.push(...bucket.slice(0, remaining))
+		    if (result.length === k) break
+  	}
 
-	return result
+	  return result
 }
