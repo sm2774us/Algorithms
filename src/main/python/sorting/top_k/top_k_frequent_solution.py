@@ -1,3 +1,4 @@
+import random
 import collections
 import heapq
 from itertools import chain
@@ -243,36 +244,41 @@ class Solution:
     #  
     # Space Complexity : O(N)
     #
+    def quick_select(self, frequencies, k):
+        pivot = random.choice(list(frequencies.keys()))
+        pivot_frequency = frequencies[pivot]
+
+        left = {key: val for key, val in frequencies.items() if val > pivot_frequency}
+        equal = {key: val for key, val in frequencies.items() if val == pivot_frequency}
+        right = {key: val for key, val in frequencies.items() if val < pivot_frequency}
+
+        if k < len(left):
+            self.quick_select(left, k)
+        elif k == len(left):
+            self.output += [v for v in list(left.keys())]
+            return
+        elif k < len(left) + len(equal):
+            self.output += [v for v in list(left.keys())]
+            k -= len(left)
+            self.quick_select(equal, k)
+        elif k == len(left) + len(equal):
+            new_output = [v for v in list(left.keys())] + [x for x in list(equal.keys())]
+            self.output += new_output
+        else:
+            new_output = [v for v in list(left.keys())] + [x for x in list(equal.keys())]
+            self.output += new_output
+            k -= len(new_output)
+            self.quick_select(right, k)
+        
     def topKFrequentElementsUsingQuickSelect(self, nums: List[int], k: int) -> List[int]:
-        def quick_select(left, right):
-            pivot = left
-            l, r = left, right
-            while l < r:
-                while l < r and counts[r][1] <= counts[pivot][1]:
-                    r -= 1
-                while l < r and counts[l][1] >= counts[pivot][1]:
-                    l += 1
-                counts[l], counts[r] = counts[r], counts[l]
-            counts[left], counts[l] = counts[l], counts[left]
+        frequencies = collections.defaultdict(int)
+        for num in nums:
+            frequencies[num] += 1
         
-            if l + 1 == k:
-                return counts[:l+1]
-            elif l + 1 < k:
-                return quick_select(l + 1, right)
-            else:
-                return quick_select(left, l - 1)
-    
-        if not nums:
-            return []
+        self.output = []
+        self.quick_select(frequencies, k)
+        return self.output    
         
-        # Get the counts.
-        counts = {}
-        for x in nums:
-            counts[x] = counts.setdefault(x, 0) + 1
-        
-        counts = counts.items()
-        # Use quick select to get the top k counts.
-        return [c[0] for c in quick_select(0, len(counts) - 1)]
 
 class SolutionUnionFindTest(unittest.TestCase):
     def setUp(self):

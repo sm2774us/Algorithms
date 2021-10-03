@@ -7,6 +7,7 @@
       "noImplicitReturns": true,
       "noFallthroughCasesInSwitch": true,
       "downlevelIteration": true,
-      "plugins": [{ "name": "typescript-deno-plugin" }]
+      "plugins": [{ "name": "typescript-deno-plugin" }],
+      "target": "es5"
     }
   }
