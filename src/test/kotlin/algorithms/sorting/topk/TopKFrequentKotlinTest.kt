@@ -1,7 +1,7 @@
 package algorithms.sorting.topk
 
 import org.junit.jupiter.api.Assertions.assertEquals
-//import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 
 import kotlin.collections.List
 import java.util.stream.Stream
@@ -36,7 +36,7 @@ class TopKFrequentKotlinTest {
         assertEquals(result, TopKFrequentKotlin().topKFrequentUsingNaiveSort(words, k))
     }
 
-    @ParameterizedTest(name = "topK Frequent Words Using Max Heap - TC: O(N+K*log(N)) ; SC: O(N)")
+    @ParameterizedTest(name = "topK Frequent Words Using Max Heap - TC: O(K*log(N)) ; SC: O(N)")
     @MethodSource("topKFreqentWordsSource")
     fun topKFrequentUsingMaxHeap(words: Array<String>, k: Int, result: List<String>) {
         assertEquals(result, TopKFrequentKotlin().topKFrequentUsingMaxHeap(words, k));
@@ -48,4 +48,29 @@ class TopKFrequentKotlinTest {
         assertEquals(result, TopKFrequentKotlin().topKFrequentUsingMinHeap(words, k));
     }
 
+    @ParameterizedTest(name = "topK Frequent Elements Using Max Heap - TC: O(K*log(N)) ; SC: O(N)")
+    @MethodSource("topKFreqentElementsSource")
+    fun topKFrequentElementsUsingMaxHeap(nums: IntArray, k: Int, result: IntArray) {
+        assertArrayEquals(result, TopKFrequentKotlin().topKFrequentElementsUsingMaxHeap(nums, k));
+    }
+
+    // TODO: Fix this test case.    
+    // @ParameterizedTest(name = "topK Frequent Elements Using Min Heap - TC: O(N*log(K)) ; SC: O(K+N)")
+    // @MethodSource("topKFreqentElementsSource")
+    // fun topKFrequentElementsUsingMinHeap(nums: IntArray, k: Int, result: IntArray) {
+    //     assertArrayEquals(result, TopKFrequentKotlin().topKFrequentElementsUsingMinHeap(nums, k));
+    // }
+
+    @ParameterizedTest(name = "topK Frequent Elements Using Bucket Sort - TC: O(N) ; SC: O(N)")
+    @MethodSource("topKFreqentElementsSource")
+    fun topKFrequentElementsUsingBucketSort(nums: IntArray, k: Int, result: IntArray) {
+        assertArrayEquals(result, TopKFrequentKotlin().topKFrequentElementsUsingBucketSort(nums, k));
+    }
+
+    // TODO: Fix this test case.
+    // @ParameterizedTest(name = "topK Frequent Elements Using Quick Select - TC: O(N) avg and O(N^2) worst ; SC: O(N)")
+    // @MethodSource("topKFreqentElementsSource")
+    // fun topKFrequentElementsUsingQuickSelect(nums: IntArray, k: Int, result: IntArray) {
+    //     assertArrayEquals(result, TopKFrequentKotlin().topKFrequentElementsUsingQuickSelect(nums, k));
+    // }
 }

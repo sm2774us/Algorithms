@@ -1,8 +1,5 @@
 package algorithms.sorting.topk;
 
-import algorithms.sorting.utils.MaxHeapComparator;
-import algorithms.sorting.utils.SimpleMapComparator;
-
 import java.util.*;
 
 public class TopKFrequent {
@@ -12,11 +9,14 @@ public class TopKFrequent {
 	 * https://leetcode.com/problems/top-k-frequent-words/
 	 *
 	 *	
-     * Solution-1: NAIVE SORT - The easiest way to think of this problem and easy to implement.
+     * Solution-1: NAIVE SORT
      * 
-     * Determine top-K frequent elements using Naive Sorting.
+     * 1. Have a map of words and their counts. 
+     * 2. Create a list of the words and sort them based on their frequency in reverse order 
+     *    (to make it descending order) first, then based on alphabatical order.
+     * 3. Now return k elements from this list.
      *
-     * Time Complexity  : O(N*log(N)), naive sort is O(N*log(N))
+     * Time Complexity  : O(N*log(N)), as Collections.sort is O(N*log(N))
      * Space Complexity : O(N)       , for map and list
      *
      * @param words
@@ -24,20 +24,26 @@ public class TopKFrequent {
      * @return
      */
     public List<String> topKFrequentUsingNaiveSort(String[] words, int k) {
-        Map<String, Integer> map = new HashMap<>();
-        for(String word:words){
-            map.put(word, map.getOrDefault(word, 0)+1);
+        if (words == null || words.length == 0 || k <= 0 || k > words.length) return Collections.<String>emptyList();
+        Map<String, Integer> wordCountMap = new HashMap<>();
+        
+        for(String word : words){
+            wordCountMap.put(word, wordCountMap.getOrDefault(word, 0)+1);
         }
-        List<Map.Entry<String, Integer>> l = new LinkedList<>();
-        for(Map.Entry<String, Integer> e:map.entrySet()){
-            l.add(e);
-        }
-        Collections.sort(l, new SimpleMapComparator());//just use our Comparator to sort
-        List<String> ans = new LinkedList<>();
-        for(int i = 0;i<=k-1;i++){
-            ans.add(l.get(i).getKey());
-        }
-        return ans;
+        
+        List<String> wordsList = new ArrayList<>(wordCountMap.keySet());
+        
+        Collections.sort(wordsList, (word1, word2) -> {
+            int diff = wordCountMap.get(word2) - wordCountMap.get(word1);     //Compare frequency in reverse order 
+            if(diff!=0){                                                      //Frequency is different, sort based on frequency
+                return diff;
+            }
+            else{                                                             //Frequency is same
+                return word1.compareTo(word2);                                //Sort based on alphabatical order
+            }
+        });
+        
+        return wordsList.subList(0, k);                                       //Return k elements
     }
 
     /**
@@ -45,11 +51,21 @@ public class TopKFrequent {
 	 * https://leetcode.com/problems/top-k-frequent-words/
 	 *
 	 *	
-     * Solution-2: MAX HEAP - Maintain a max heap and add all the words in it. Pop top K words to get the results.
+     * Solution-2: MAX HEAP
      * 
-     * Determine top-K frequent elements using Max Heap.
+     * 1. Create hash table for the words with frequency
+     * 2. Create maxHeap with words and add them to it
+     * 3. Poll top k from the maxHeap and add them to Result list
+     * 
+     * Time Complexity  : O(K*log(N))
+     *                    O(N) for heapify 
+     *                    and 
+     *                    O(K*log(N)) for poping k times
+     * 
+     *                    Highest Time Complexity of O(K*log(N)) v/s O(N) so,
+     *                    instead of: O(N+K*log(N))
+     *                    TC = O(K*log(N))
      *
-     * Time Complexity  : O(N+K*log(N)), O(N) for heapify and O(k*log(N)) for poping k times
      * Space Complexity : O(N)         , for heap
      *
      * @param words
@@ -57,19 +73,33 @@ public class TopKFrequent {
      * @return
      */
     public List<String> topKFrequentUsingMaxHeap(String[] words, int k) {
-        Map<String, Integer> map = new HashMap<>();
-        for(String word:words){
-            map.put(word, map.getOrDefault(word, 0)+1);
+        if (words == null || words.length == 0 || k <= 0 || k > words.length) return Collections.<String>emptyList();
+        List<String> results = new ArrayList<String>();
+
+        // 1. Create hash table for the word with frequency | O(N)
+        Map<String , Integer> wordFrequency = new HashMap<String, Integer>();
+
+        for( String word : words){
+            
+            int frequency = wordFrequency.getOrDefault(word, 0) + 1;
+            wordFrequency.put(word.toLowerCase(), frequency);
         }
-        PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>(new MaxHeapComparator());
-        for(Map.Entry<String, Integer> e:map.entrySet()){
-            pq.offer(e);
+
+        // 2. Create maxHeap and add all words | O(N)
+        Queue<String> maxHeap = new PriorityQueue<>(new FrequencyComparator(wordFrequency));
+
+        for (String word: wordFrequency.keySet()){
+            maxHeap.add(word);
+
         }
-        List<String> ans = new LinkedList<>();
-        for(int i = 0; i<=k-1; i++) {
-            ans.add(pq.poll().getKey());
+
+        // 3. Poll top k from the maxHeap | Time: O(k LogN) because each poll is logN and we are polling k times.
+        while (!maxHeap.isEmpty() && k-- > 0){
+            results.add(maxHeap.poll());
         }
-        return ans;
+
+        //Highest Time complexity O(k LogN) which is better than O(NlogN) if we sort the element in Hashmap .
+        return results;
     }
 
     /**
@@ -88,6 +118,7 @@ public class TopKFrequent {
      * @return
      */
     public List<String> topKFrequentUsingMinHeap(String[] words, int k) {
+        if (words == null || words.length == 0 || k <= 0 || k > words.length) return Collections.<String>emptyList();
         // first count the occurance of each word
         Map<String, Integer> map = new HashMap<>();
         for (String word: words) {
@@ -108,250 +139,143 @@ public class TopKFrequent {
         return sortedList;        
     }
 
-    /**
-	 * LeetCode - 692 : Top K Frequent Words.
-	 * https://leetcode.com/problems/top-k-frequent-words/
-	 *
-	 *	
-     * Solution-4: QUICKSELECT -
-     * 
-     * Use quick select to figure out what the top k elements are. That's O(N).
-     * Then sort those top k elements. That's O(K*log(K)).
-     * 
-     * For both of these operations, use the custom compare operation that prioritizes frequency, followed by alphabetical order.
-     * 
-     * Determine top-K frequent elements using QuickSelect + top-k sort.
-     *
-     * Time Complexity  : O(N) + O(K*Log(K)) = O(N + K*log(K)), N time for quick select and K*log(K) time for sort
-     * 
-     * where N = words.length
-     * 
-     * Space Complexity : O(N)
-     *
-     * @param words
-     * @param k
-     * @return
-     */
-    public List<String> topKFrequentUsingQuickSelect(String[] words, int k) {
-        Map<String, Integer> counts = new HashMap<>();
-        for (String word: words) {
-            counts.put(word, counts.getOrDefault(word, 0) + 1);
-        }
-        String[] distinctWords = new String[counts.keySet().size()];
-        int idx = 0;
-        for (String word: counts.keySet()) distinctWords[idx++] = word;
-        findKthLargest(distinctWords, k, counts);
-        // System.out.println(Arrays.toString(distinctWords) + " " + counts);
-        String[] topK = Arrays.copyOfRange(distinctWords, 0, k);
-        Arrays.sort(topK, (a, b) -> compare(b, a, counts));
-        return Arrays.asList(topK);
-    }
+    private static class FrequencyComparator implements Comparator<String> {
+        private final Map<String, Integer> wordFrequency;
 
-    private String findKthLargest(String[] nums, int k, Map<String, Integer> counts) {
-        int low = 0, high = nums.length - 1;
-        
-        while (low < high) {
-            int pivot = partition(nums, low, high, counts);
-            if (pivot == k -1) return nums[pivot];
-            
-            if (pivot >= k) high = pivot - 1;
-            else low = pivot + 1;
-        }
-        return nums[low];
-    }
-    
-    private int partition(String[] nums, int low, int high, Map<String, Integer> counts) {
-        int pivot = low;
-        // Note that we should start with the pivot element, and not the next element, 
-        // because it's possible that none of the next elements are larger than the pivot. 
-        // The main assumption behind the rest of the loop is that low points to a 'valid' greater-than range at the end.
-        while (low < high) { // when this breaks, low points to the last element >= pivot
-            while (low < high && compare(nums[high], nums[pivot], counts) < 0) high--; // this breaks when one of the two conditions are violated
-            while (low < high && compare(nums[low], nums[pivot], counts) >= 0) low++; // This may break either because high has now gone past the >=pivot, or because we've now reached a smaller than pivot element. Note that for low to stop because of the latter condition, high should have stopped at a 'larger than pivot' element; otherwise high would have crossed the border into 'low' and low wouldn't have a chance of crossing the border into high (loop would have broken already by then)
-            
-            if (low < high) swap(nums, low, high); // if the previous loops broke without crossing the borders, it means that that high points to a larger element, and low points to a smaller element. Swap them if that's the case.
-        }
-        // since low always points to the last element that satisfies 'larger than or equal to pivot', we can always safely move pivot to 'low' at the end.
-        swap(nums, low, pivot);
-        return low;
-    }
-
-    private int compare(String a, String b, Map<String, Integer> counts) {
-        if (counts.get(a) == counts.get(b)) return b.compareTo(a); // 'lower alphabetical order comes first'
-        return Integer.compare(counts.get(a), counts.get(b));
-    }
-
-    private void swap(String[] nums, int a, int b) {
-        String tmp = nums[a];
-        nums[a] = nums[b];
-        nums[b] = tmp;
-    }
-
-    /**
-	 * LeetCode - 692 : Top K Frequent Words.
-	 * https://leetcode.com/problems/top-k-frequent-words/
-	 *
-	 *
-     * Solution-5: SORTED SET -
-     * 
-     * Time Complexity  : O(N*log(K)), 
-     * 
-     * Adding an item to a TreeSet is O(log(N)).
-     * And, we are doing this N times.
-     * So, a total time complexity of: O(N*log(N)).
-     * 
-     * For this problem we are doing an TreeSet.addAll() and the passed in collection is a SortedSet.
-     * So addAll() takes O(N) time.
-     * 
-     * Reference: https://stackoverflow.com/questions/3390449/computational-complexity-of-treeset-operations-in-java
-     * 
-     * We are also doing a next() on TreeSet using the iterator which will be O(log(K)) time.
-     * So overall time of O(N*log(K)).
-     * 
-     * References:
-     * https://stackoverflow.com/questions/14379515/computational-complexity-of-treeset-methods-in-java 
-     * https://gist.github.com/psayre23/c30a821239f4818b0709
-     * 
-     * where N = words.length
-     * 
-     * Space Complexity : O(N)
-     * 
-     * NOTE: This is a slightly more expensive form of the heap approach... requires "re-heaping".
-     * It is always more efficient to check to see if you should add it before you insert it.
-     * 
-     */
-    public List<String> topKFrequentUsingSortedSet(String[] words, int k) {
-        Map<String, Integer> map = new HashMap<>();
-        for (String word : words) {
-            map.put(word, map.getOrDefault(word, 0) + 1);
+        public FrequencyComparator(Map<String, Integer> wordFrequency) {
+            this.wordFrequency = wordFrequency;
         }
 
-        SortedSet<Map.Entry<String, Integer>> sortedset = new TreeSet<>(
-                (e1, e2) -> {
-                    if (e1.getValue() != e2.getValue()) {
-                        return e2.getValue() - e1.getValue();
-                    } else {
-                        //return e1.getKey().compareToIgnoreCase(e2.getKey());
-                        return e1.getKey().compareTo(e2.getKey());
-                    }
-                });
-        sortedset.addAll(map.entrySet());
-
-        List<String> result = new ArrayList<>();
-        Iterator<Map.Entry<String, Integer>> iterator = sortedset.iterator();
-        while (iterator.hasNext() && k-- > 0) {
-            result.add(iterator.next().getKey());
-        }
-        return result;
-    }
-
-    class Trie {
-        int cnt;
-        int low;
-        int high;
-        String str;
-        Trie[] children;
-        Trie() {
-        }
-        
-        Trie insert(String str, int lvl) {
-            if (lvl >= str.length()) {
-                if (cnt == 0) {
-                    this.str = str;
-                }
-                cnt++;
-                return this;
+        @Override
+        public int compare(String left, String  right) {
+            if (wordFrequency.get(left) == wordFrequency.get(right)){
+                return left.compareTo(right);
             }
-            
-            int idx = str.charAt(lvl) - 'a';
-            if (children == null) {
-                children = new Trie[26];
-                low = high = idx;
-            }
-            
-            if (children[idx] == null) {
-                children[idx] = new Trie();
-                if (idx < low) {
-                    low = idx;
-                } else if (idx > high) { 
-                    high = idx;
-                }
-            }
-            return children[idx].insert(str, lvl+1);
+            return wordFrequency.get(right) - wordFrequency.get(left); //Higher value of right - MaxHeap
         }
-        
-        void traverse() {
-            if (children != null) {
-                for (int i = high; i >= low; i--) {
-                    if (children[i] == null) {
-                        continue;
-                    }
-                    children[i].traverse();
-                }
-            }
-
-            if (cnt > 0) {
-                ListTrie listTrie = new ListTrie(this);
-                listTrie.next = listTries[cnt];
-                listTries[cnt] = listTrie;
-            }
-        }
-    }
-    
-    class ListTrie {
-        Trie trie;
-        ListTrie next;
-        ListTrie(Trie trie) {
-            this.trie = trie;
-        }
-    }
-    
-    ListTrie[] listTries;
-
-    /**
-	 * LeetCode - 692 : Top K Frequent Words.
-	 * https://leetcode.com/problems/top-k-frequent-words/
-	 *
-	 *
-     * Solution-6: TRIE -
-     * 
-     * Time Complexity  : O(N)
-     * Space Complexity  : O(N)
-     */    
-    public List<String> topKFrequentUsingTrie(String[] words, int k) {
-        
-        Trie root = new Trie();
-        int maxCnt = 0;
-        
-        for (int i = 0; i < words.length; i++) {        
-            Trie trie = root.insert(words[i], 0);
-            if (trie.cnt > maxCnt) {
-                maxCnt = trie.cnt;
-            }
-        }
-        
-        listTries = new ListTrie[maxCnt+1];
-        root.traverse();
-        
-        LinkedList<String> rslts = new LinkedList<>();
-        int rest = k;
-        for (int i = maxCnt; i >= 0 && rest > 0; i--) {
-            ListTrie listTrie = listTries[i];
-            while(rest > 0 && listTrie != null) {
-                rslts.add(listTrie.trie.str);
-                rest--;
-                listTrie = listTrie.next;
-            }
-            
-        }
-        return rslts;
     }
 
     /**
 	 * LeetCode - 347 : Top K Frequent Elements.
 	 * https://leetcode.com/problems/top-k-frequent-elements/
 	 *
-     * Solution-1: BUCKET SORT -
+     * Solution-1: MAX HEAP -
+     * 
+     * Algorithm Steps:
+     *   1. Create a frequency table
+     *   2. Create a Max Heap and add all the distinct elements
+     *   3. Poll top k frequent elements off the Heap
+     * 
+     * Time & Space Complexity Analysis:
+     * 
+     * N = # of elements in the input array
+     * D = # of distinct (unique) elements in the input array
+     * 
+     * Building the HashMap: O(N) time
+     *   - Add all the N elements into the HashMap and add thier frequency
+     * 
+     * Building the Heap: O(D) time
+     *   - https://www.geeksforgeeks.org/time-complexity-of-building-a-heap/
+     *   - Above is a proof that shows that building a heap of N elements will take O(N) time
+     *   - In our case we are building a heap of D elements = O(D) time
+     * 
+     * Poll K distinct elements from the Heap: O(K log D) time
+     *   - There are D elements in the Heap and we call poll() K times = O(K log D) time
+     * 
+     * Total Time Complexity = O(K log D)
+     * Total Space Complexity = O(D), this is the size of the heap.
+     * 
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] topKFrequentElementsUsingMaxHeap(int[] nums, int k) {        
+        if (nums == null || nums.length == 0 || k <= 0 || k > nums.length) return new int[0];
+        Map<Integer, Integer> map = new HashMap<>();
+        
+		// count the number of each item
+        for (int n: nums) {
+	        map.put(n, map.getOrDefault(n, 0) + 1);
+        }
+        
+		// create a heap with customized comparator 
+		// [1,1,1,2,2,3] ->
+		// {[1,3][2,2][3,1]
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[1] - a[1]);
+        
+		// fill the heap
+        map.keySet().forEach(v -> {
+            pq.offer(new int[] {v, map.get(v)});
+        });
+        
+		// get the result
+        int[] ans = new int[k];
+        for (int i = 0; i < k; i ++) {
+            ans[i] = pq.poll()[0];
+        }
+        
+        return ans;
+    }
+
+    /**
+	 * LeetCode - 347 : Top K Frequent Elements.
+	 * https://leetcode.com/problems/top-k-frequent-elements/
+	 *
+     * Solution-2: MIN HEAP -
+     * 
+     * 1. Keep a heap which has the size of k.
+     * 2. Since we are using min-heap, the top element of the heap 
+     *    is the smallest frequency in a heap. 
+     *    The top element of heap works as a threshold. 
+     *    Only the frequency more significant than the threshold can get into the heap. 
+     *    When we met a new frequency, if the new frequency is less than the top element 
+     *    of the heap, move on; if the new frequency is larger than the top element 
+     *    of the heap, we pop out the top element of the heap, and push the new frequency 
+     *    into the heap.
+     * 
+     * Time & Space Complexity Analysis:
+     * 
+     * Time Complexity = O(N log K)
+     * Space Complexity = O(K + N)
+     * 
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] topKFrequentElementsUsingMinHeap(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k <= 0 || k > nums.length) return new int[0];
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        for (int num : nums) {
+            freqMap.put(num, freqMap.getOrDefault(num, 0)+1);
+        }
+        //System.out.println(freqMap);
+        //PriorityQueue<Map.Entry<Integer, Integer>> minHeap = new PriorityQueue<>(k + 1, (e1, e2) -> Integer.compare(e1.getValue(), e2.getValue()));
+        PriorityQueue<Map.Entry<Integer, Integer>> minHeap = 
+        new PriorityQueue<>((e1, e2) -> e1.getValue()-e2.getValue());
+        for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
+            minHeap.add(entry);
+            if (minHeap.size() > k) {
+                minHeap.poll();
+            }
+        }
+        //System.out.println(minHeap);
+        List<Integer> result = new ArrayList<>(k);
+        while (!minHeap.isEmpty()) {
+            result.add(minHeap.poll().getKey());
+        }
+        //int[] res = new int[k];
+        //int i = 0;
+        //for (Map.Entry<Integer, Integer> entry : minHeap) {
+        //    res[i++] = entry.getKey();
+        //}
+        return result.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    /**
+	 * LeetCode - 347 : Top K Frequent Elements.
+	 * https://leetcode.com/problems/top-k-frequent-elements/
+	 *
+     * Solution-3: BUCKET SORT -
      * 
      * It is intuitive to map a value to its frequency. 
      * Then our problem becomes 'to sort map entries by their values'.
@@ -365,12 +289,39 @@ public class TopKFrequent {
      * Time Complexity  : O(N)
      * Space Complexity : O(N)
      *
+     * Java Learning Point:
+     * --------------------
+     * You can create an array of lists but you cannot use type during initalization.
+     * 
+     * Example:
+     * List<Integer>[] lists=new List[10];
+     * 
+     * Why this works? 
+     * Because the lists variable points to an array data structure 
+     * whose data type is List<Integer>. This array contains a set of references 
+     * to different objects of type List<Integer>, and this is why if we try 
+     * to run lists[i]=new ArrayList<String>(); it will not compile. 
+     * However when we initialize the array itself we don't need to provide 
+     * the type of the List objects as List since from JVM point of view a 
+     * List of Integer objects and a List of Object objects will require 
+     * the same number of bytes as logn as their sizes is same. 
+     * The only constraint comes when we set a array member to a value 
+     * (of type List - it has to be List<Integer> not anything else)
+     * 
+     * You can type cast the List[] to a List<Integer>[] but the end result 
+     * and the JVM behavior is the same.
+     * 
+     * Reference: 
+     * https://stackoverflow.com/questions/15636558/how-to-new-a-listinteger-in-java
+     * 
      * @param words
      * @param k
      * @return
      */
+    @SuppressWarnings("unchecked") 
     public int[] topKFrequentElementsUsingBucketSort(int[] nums, int k) {
-        // since the range of count is fixed (0, nums), we can use buckt sort
+        if (nums == null || nums.length == 0 || k <= 0 || k > nums.length) return new int[0];
+        // since the range of count is fixed (0, nums), we can use bucket sort
         // count frequency
         Map<Integer, Integer> counts = new HashMap<>();
         for (int n : nums) {
@@ -402,4 +353,77 @@ public class TopKFrequent {
         return res;
     }
 
+    /**
+	 * LeetCode - 347 : Top K Frequent Elements.
+	 * https://leetcode.com/problems/top-k-frequent-elements/
+	 *
+     * Solution-4: QUICK SELECT
+     * 
+     * HashMap + Quick Select Solution
+     * 1. HashMap to store <num, freq> pair
+     * 2. Quick select to select the most frequent k element 
+     *    Quick select is by the freq value not the num key.
+     *
+     * Time Complexity  : O(N) 
+     *                    ( Worst case could be O(N^2) ... O(N) is the average )
+     *                    Refer to: https://en.wikipedia.org/wiki/Quickselect
+     * 
+     * Space Complexity : O(N)
+     *
+     * @param words
+     * @param k
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public int[] topKFrequentElementsUsingQuickSelect(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k <= 0 || k > nums.length) return new int[0];
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        for (int num : nums) {
+            int freq = freqMap.getOrDefault(num, 0) + 1;
+            freqMap.put(num, freq);
+        }
+        Map.Entry<Integer, Integer>[] arr = freqMap.entrySet().toArray(new Map.Entry[0]);
+        quickSelect(arr, arr.length - k);
+        int[] res = new int[k];
+        for (int i = 0, j = arr.length - 1; i < k; i++, j--) {
+            res[i] = arr[j].getKey();
+        }
+        return res;
+    }
+    
+    private void quickSelect(Map.Entry<Integer, Integer>[] arr, int k) {
+        // shuffle is not needed because arr is shuffled by hash map.
+        int l = 0, r = arr.length - 1;
+        while (l <= r) {
+            int mid = partition(arr, l , r);
+            if (mid > k) {
+                r = mid - 1;
+            } else if (mid < k) {
+                l = mid + 1;
+            } else {
+                return;
+            }
+        }
+    }
+    
+    private int partition(Map.Entry<Integer, Integer>[] arr, int l, int r) {
+        int pivot = arr[r].getValue();
+        while (l < r) {
+            while (l < r && arr[l].getValue() <= pivot) {
+                l++;
+            }
+            swap(arr, l, r);
+            while (l < r && arr[r].getValue() >= pivot) {
+                r--;
+            }
+            swap(arr, l, r);
+        }
+        return l;
+    }
+    
+    private void swap(Map.Entry<Integer, Integer>[] arr, int l, int r) {
+        Map.Entry<Integer, Integer> temp = arr[l];
+        arr[l] = arr[r];
+        arr[r] = temp;
+    }
 }
