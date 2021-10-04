@@ -11,30 +11,32 @@
 */
 export function mergeArraysUsingMaxHeap(arrays: number[][]): number[] {
 	const merged: number[] = [],
-		increasingOrder: boolean = isIncreasingOrder(arrays)
+		increasingOrder: boolean = isIncreasingOrder(arrays);
 	// [0]
-	const heap: MinBinaryHeap | MaxBinaryHeap = increasingOrder ? new MinBinaryHeap() : new MaxBinaryHeap()
+	const heap: MinBinaryHeap | MaxBinaryHeap = increasingOrder ? new MinBinaryHeap() : new MaxBinaryHeap();
 
 	// [1]
 	arrays.forEach((arr, i) => {
-		heap.insert(new HeapNode(i, 0, arr[0]))
+		heap.insert(new HeapNode(i, 0, arr[0]));
 	})
 
-	heap.heapify()
+	heap.heapify();
 
 	if (increasingOrder) {
 		// [2]
 		while (heap.top.value !== Number.POSITIVE_INFINITY) {
-			getAndInsertNextVal(arrays, heap, merged, Infinity)
+			getAndInsertNextVal(arrays, heap, merged, Infinity);
 		}
 	} else {
 		while (heap.top.value !== Number.NEGATIVE_INFINITY) {
-			getAndInsertNextVal(arrays, heap, merged, -Infinity)
+			getAndInsertNextVal(arrays, heap, merged, -Infinity);
 		}
 	}
 
-	merged.filter(item => !!item);
-	return merged
+	// Filter out null's and undefined's from merged array.
+	//const result: number[] = merged.filter(item => !!item);
+	const result: number[] = merged.filter(item => item !== undefined && item !== null);
+	return result;
 }
 
 /* 
