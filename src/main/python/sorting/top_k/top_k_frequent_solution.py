@@ -279,8 +279,7 @@ class Solution:
         self.quick_select(frequencies, k)
         return self.output    
         
-
-class SolutionUnionFindTest(unittest.TestCase):
+class Test(unittest.TestCase):
     def setUp(self):
         '''before each test function'''
         pass
