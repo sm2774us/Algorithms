@@ -33,6 +33,7 @@ export function mergeArraysUsingMaxHeap(arrays: number[][]): number[] {
 		}
 	}
 
+	merged.filter(item => !!item);
 	return merged
 }
 
