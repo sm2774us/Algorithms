@@ -175,6 +175,8 @@ class MinBinaryHeap extends BinaryHeap {
 	}
 }
 
+type Nullable<T> = T | null;
+
 // Max Binary Heap for decreasing sort order
 class MaxBinaryHeap extends BinaryHeap {
 	constructor() {
