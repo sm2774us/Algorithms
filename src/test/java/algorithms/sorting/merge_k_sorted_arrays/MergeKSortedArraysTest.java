@@ -36,8 +36,14 @@ public class MergeKSortedArraysTest {
 
     @ParameterizedTest(name = "merge K sorted arrays using max heap - TC: O(N*log(K)) ; SC: O(N+K)")
     @MethodSource({"methodTestDataSource1", "methodTestDataSource2"})
-    void mergekSortedArrays(int[][] arrays, int[] result) {
-        assertArrayEquals(result, solution.mergekSortedArrays(arrays));
+    void mergekSortedArraysUsingMaxHeap(int[][] arrays, int[] result) {
+        assertArrayEquals(result, solution.mergekSortedArraysUsingMaxHeap(arrays));
+    }
+
+    @ParameterizedTest(name = "merge K sorted arrays using divide and conquer - TC: O(N*log(K)) ; SC: O(N+K)")
+    @MethodSource({"methodTestDataSource1", "methodTestDataSource2"})
+    void mergekSortedUsingDivideAndConquer(int[][] arrays, int[] result) {
+        assertArrayEquals(result, solution.mergekSortedUsingDivideAndConquer(arrays));
     }
 
 }

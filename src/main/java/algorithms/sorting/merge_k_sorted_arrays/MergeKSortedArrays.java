@@ -23,7 +23,7 @@ public class MergeKSortedArrays {
      * @param arrays
      * @return
      */
-    public int[] mergekSortedArrays(int[][] arrays) {
+    public int[] mergekSortedArraysUsingMaxHeap(int[][] arrays) {
         int rows = arrays.length;
         Queue<Entry> pq = new PriorityQueue<>(rows);
     
@@ -65,4 +65,59 @@ public class MergeKSortedArrays {
         }
     }
 
+    public int [] mergekSortedUsingDivideAndConquer(int[][] lists) {
+        return divide(lists, 0, lists.length-1);
+    }
+    
+    private int [] divide(int[][] lists, int lo, int hi) {
+        int mid = lo + (hi-lo)/2;
+    
+        if (hi-lo == 1) {
+            return merge(lists[lo], lists[hi]);
+        }
+        if (hi - lo == 0) {
+            return lists[lo];
+        }
+        int [] left = divide(lists, lo, mid);
+        int [] right = divide(lists, mid+1, hi);
+        return merge(left, right);
+    }
+    
+    private int[] merge(int[] left, int[] right) {
+        if (left == null && right == null) return null;
+        if (left == null) return right;
+        if (right == null) return left;
+    
+        int [] mergedArray = new int[left.length + right.length];
+        int leftPtr = 0;
+        int rightPtr  = 0;
+        int index = 0;
+    
+        while (leftPtr < left.length && rightPtr < right.length) {
+            int leftVal = left[leftPtr];
+            int rightVal = right[rightPtr];
+    
+            if (leftVal<= rightVal) {
+                mergedArray[index] = leftVal;
+                leftPtr++;
+            } else {
+                mergedArray[index] = rightVal;
+                rightPtr++;
+            }
+            index++;
+        }
+    
+        if (leftPtr != left.length) {
+            for (int i = leftPtr; i<left.length; i++) {
+                mergedArray[index++] = left[leftPtr++];
+            }
+        }
+        if (rightPtr != right.length) {
+            for (int i = rightPtr; i<right.length; i++) {
+                mergedArray[index++] = right[rightPtr++];
+            }
+        }
+        return mergedArray;
+    }
+    
 }

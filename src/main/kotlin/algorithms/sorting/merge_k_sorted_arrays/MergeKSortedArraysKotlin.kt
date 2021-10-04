@@ -23,7 +23,7 @@ class MergeKSortedArraysKotlin {
      * @param arrays
      * @return
      */
-    fun mergekSortedArrays(arrays: Array<IntArray>): IntArray {        
+    fun mergekSortedArraysUsingMaxHeap(arrays: Array<IntArray>): IntArray {        
         val nonNullArrays: List<IntArray> = arrays.filterNotNull()
         val rows = nonNullArrays.size
         val pq: Queue<Entry> = PriorityQueue(rows)
@@ -54,4 +54,53 @@ class MergeKSortedArraysKotlin {
         }
     }
 
+    fun mergekSortedUsingDivideAndConquer(lists: Array<IntArray>): IntArray? {
+        return divide(lists, 0, lists.size - 1)
+    }
+
+    private fun divide(lists: Array<IntArray>, lo: Int, hi: Int): IntArray? {
+        val mid = lo + (hi - lo) / 2
+        if (hi - lo == 1) {
+            return merge(lists[lo], lists[hi])
+        }
+        if (hi - lo == 0) {
+            return lists[lo]
+        }
+        val left = divide(lists, lo, mid)
+        val right = divide(lists, mid + 1, hi)
+        return merge(left, right)
+    }
+
+    private fun merge(left: IntArray?, right: IntArray?): IntArray? {
+        if (left == null && right == null) return null
+        if (left == null) return right
+        if (right == null) return left
+        val mergedArray = IntArray(left.size + right.size)
+        var leftPtr = 0
+        var rightPtr = 0
+        var index = 0
+        while (leftPtr < left.size && rightPtr < right.size) {
+            val leftVal = left[leftPtr]
+            val rightVal = right[rightPtr]
+            if (leftVal <= rightVal) {
+                mergedArray[index] = leftVal
+                leftPtr++
+            } else {
+                mergedArray[index] = rightVal
+                rightPtr++
+            }
+            index++
+        }
+        if (leftPtr != left.size) {
+            for (i in leftPtr until left.size) {
+                mergedArray[index++] = left[leftPtr++]
+            }
+        }
+        if (rightPtr != right.size) {
+            for (i in rightPtr until right.size) {
+                mergedArray[index++] = right[rightPtr++]
+            }
+        }
+        return mergedArray
+    }
 }

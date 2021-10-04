@@ -24,8 +24,14 @@ class MergeKSortedArraysKotlinTest {
 
     @ParameterizedTest(name = "merge K sorted arrays using max heap - TC: O(N*log(K)) ; SC: O(N+K)")
     @MethodSource("mergekSortedArraysSource")
-    fun mergekSortedArrays(arrays: Array<IntArray>, result: IntArray) {
-        assertArrayEquals(result, MergeKSortedArraysKotlin().mergekSortedArrays(arrays))
+    fun mergekSortedArraysUsingMaxHeap(arrays: Array<IntArray>, result: IntArray) {
+        assertArrayEquals(result, MergeKSortedArraysKotlin().mergekSortedArraysUsingMaxHeap(arrays))
+    }
+
+    @ParameterizedTest(name = "merge K sorted arrays using divide and conquer - TC: O(N*log(K)) ; SC: O(N+K)")
+    @MethodSource("mergekSortedArraysSource")
+    fun mergekSortedUsingDivideAndConquer(arrays: Array<IntArray>, result: IntArray) {
+        assertArrayEquals(result, MergeKSortedArraysKotlin().mergekSortedUsingDivideAndConquer(arrays))
     }
 
 }
