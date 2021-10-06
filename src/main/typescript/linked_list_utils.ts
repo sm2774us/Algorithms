@@ -13,7 +13,7 @@ export function toNumber(l: ListNode): number {
     return num;
 }
 
-export function fromNumber(num: number): ListNode {
+export function fromNumber(num: number): ListNode | null {
     const numStr = String(num);
     let headNode: ListNode | null = null;
     for (let i = 0; i < numStr.length; i++) {

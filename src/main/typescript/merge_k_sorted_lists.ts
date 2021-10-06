@@ -3,7 +3,7 @@
  */ 
 export class ListNode {
     
-	val: number;
+	val: number | null;
     next: ListNode | null;
 	
 	constructor(val?: number | null, next?: ListNode | null) {
