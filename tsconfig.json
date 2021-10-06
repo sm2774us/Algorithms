@@ -2,6 +2,7 @@
     "compilerOptions": {
       "lib": ["esnext"],
       "strict": true,
+      "strictNullChecks": false,
       "noUnusedLocals": true,
       "noUnusedParameters": true,
       "noImplicitReturns": true,
