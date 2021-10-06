@@ -1,4 +1,4 @@
-package algorithms.sorting.merge_k_sorted_arrays;
+package algorithms.sorting.merge_k_sorted_arrays
 
 import java.util.PriorityQueue
 import java.util.Queue

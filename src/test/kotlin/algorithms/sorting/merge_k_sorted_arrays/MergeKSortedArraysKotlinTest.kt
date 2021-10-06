@@ -14,7 +14,7 @@ class MergeKSortedArraysKotlinTest {
 
     companion object {
         @JvmStatic
-        fun mergekSortedArraysSource(): Stream<Arguments> {
+        fun mergeKListsSource(): Stream<Arguments> {
             return Stream.of(
                 Arguments.of(arrayOf(intArrayOf(1,4,5,10), intArrayOf(1,3,4), intArrayOf(2,6), null), intArrayOf(1,1,2,3,4,4,5,6,10)),
                 Arguments.of(arrayOf(intArrayOf(1,2), intArrayOf(2,3)), intArrayOf(1,2,2,3))
@@ -22,16 +22,10 @@ class MergeKSortedArraysKotlinTest {
         }
     }
 
-    @ParameterizedTest(name = "merge K sorted arrays using max heap - TC: O(N*log(K)) ; SC: O(N+K)")
-    @MethodSource("mergekSortedArraysSource")
-    fun mergekSortedArraysUsingMaxHeap(arrays: Array<IntArray>, result: IntArray) {
+    @ParameterizedTest(name = "merge K sorted lists using max heap - TC: O(N*log(K)) ; SC: O(K)")
+    @MethodSource("mergeKListsSource")
+    fun mergeKListsUsingMaxHeap(arrays: Array<IntArray>, result: IntArray) {
         assertArrayEquals(result, MergeKSortedArraysKotlin().mergekSortedArraysUsingMaxHeap(arrays))
-    }
-
-    @ParameterizedTest(name = "merge K sorted arrays using divide and conquer - TC: O(N*log(K)) ; SC: O(N+K)")
-    @MethodSource("mergekSortedArraysSource")
-    fun mergekSortedUsingDivideAndConquer(arrays: Array<IntArray>, result: IntArray) {
-        assertArrayEquals(result, MergeKSortedArraysKotlin().mergekSortedUsingDivideAndConquer(arrays))
     }
 
 }
