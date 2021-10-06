@@ -15,7 +15,7 @@ export function toNumber(l: ListNode): number {
 
 export function fromNumber(num: number): ListNode {
     const numStr = String(num);
-    let headNode: ListNode = null;
+    let headNode: ListNode | null = null;
     for (let i = 0; i < numStr.length; i++) {
         const digit = parseInt(numStr.charAt(i), 10);
         const node = new ListNode(digit);
