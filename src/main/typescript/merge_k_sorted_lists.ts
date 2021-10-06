@@ -1,7 +1,7 @@
 /**
  * Definition for singly-linked list.
  */ 
-class ListNode {
+export class ListNode {
     
 	val: number;
     next: ListNode | null;
