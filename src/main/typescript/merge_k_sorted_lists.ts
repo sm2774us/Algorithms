@@ -47,6 +47,7 @@ export class ListNode {
  * @returns {ListNode | null}
  */
 export function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
+    // @ts-ignore: Object is possibly 'null'.
     const pq = new BinaryHeap<ListNode>((a, b) => a?.val < b?.val);
     
     for (const listNode of lists) {
