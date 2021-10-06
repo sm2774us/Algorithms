@@ -47,7 +47,7 @@ export class ListNode {
  * @returns {ListNode | null}
  */
 export function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
-    const pq = new BinaryHeap<ListNode>((a, b) => a.val < b.val);
+    const pq = new BinaryHeap<ListNode>((a, b) => a?.val < b?.val);
     
     for (const listNode of lists) {
         if (listNode !== null) pq.push(listNode);
