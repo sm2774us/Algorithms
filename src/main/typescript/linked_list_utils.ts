@@ -6,7 +6,9 @@ export function toNumber(l: ListNode): number {
     let exponent = 0;
     while (currentNode) {
         num += currentNode.val * Math.pow(10, exponent++);
-        currentNode = currentNode.next;
+        if (currentNode.next !== null) {
+            currentNode = currentNode.next;
+        }
     }
     return num;
 }
